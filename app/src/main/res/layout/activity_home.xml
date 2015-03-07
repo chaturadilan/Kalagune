@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="March 30"
+            android:text="Thursday, March 30"
             android:paddingTop="8dp"
             android:textColor="@color/color_black"
             android:layout_alignParentRight="true"
