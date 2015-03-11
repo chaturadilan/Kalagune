@@ -10,7 +10,7 @@ public class ForecastItem {
     private Drawable forecastImage;
     private String forecastText;
     private String forecastDate;
-    private final String forecastTemp;
+    private String forecastTemp;
 
     public ForecastItem(Drawable forecastImage, String forecastText,  String forecastDate,  String forecastTemp) {
         this.forecastImage = forecastImage;
@@ -34,4 +34,6 @@ public class ForecastItem {
     public String getForecastTemp() {
         return forecastTemp;
     }
+
+    public ForecastItem(){}
 }

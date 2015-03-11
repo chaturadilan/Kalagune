@@ -11,6 +11,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -18,12 +19,19 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import wso2.org.kalagune.forecast.ForecastItem;
+import wso2.org.kalagune.util.NetworkOperations;
 
 
 public class HomeActivity extends ActionBarActivity implements
@@ -70,6 +78,9 @@ public class HomeActivity extends ActionBarActivity implements
         };
 
         registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+
+        LoadWeatherService task = new LoadWeatherService();
+        task.execute();
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -99,7 +110,7 @@ public class HomeActivity extends ActionBarActivity implements
         }
     }
 
-    public class LoadWeatherService extends AsyncTask<Void, Void, Void>{
+    public class LoadWeatherService extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -108,13 +119,23 @@ public class HomeActivity extends ActionBarActivity implements
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            return null;
+        protected String doInBackground(Void... params) {
+            return NetworkOperations.makeGetRequest("http://10.100.5.70/weather/api.php?action=location");
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(String result) {
+            ForecastItem item = new ForecastItem();
+            try {
+                JSONObject json = new JSONObject(result);
+                String date=json.getString("date");
+                String condition=json.getString("condition");
+                int temperature=json.getInt("temperature");
+            }
+            catch (JSONException e){
+
+            }
+            super.onPostExecute(result);
             progressDialog.hide();
         }
 
