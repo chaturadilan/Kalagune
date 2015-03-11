@@ -216,6 +216,6 @@ public class HomeActivity extends ActionBarActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        mGoogleApiClient.connect();
     }
 }
