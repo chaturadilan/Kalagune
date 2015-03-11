@@ -1,22 +1,28 @@
 package wso2.org.kalagune;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import android.content.Context;
-import android.content.IntentFilter;
 
 
 public class HomeActivity extends ActionBarActivity {
 
-    private TextView textViewTime, textViewDate;
+    private TextView textViewTime, textViewDate, textViewTemp, textViewCity, textViewWeather;
+    ProgressDialog progressDialog;
+
     private BroadcastReceiver broadcastReceiver;
     private static final String DATE_FORMAT = "EEEE, MMMM dd";
     private static final String TIME_FORMAT = "HH:mm";
@@ -24,11 +30,18 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         textViewDate = (TextView)findViewById(R.id.textViewDate);
         textViewTime = (TextView)findViewById(R.id.textViewTime);
+        textViewTemp = (TextView)findViewById(R.id.textViewTemp);
+        textViewCity = (TextView)findViewById(R.id.textViewCity);
+        textViewWeather = (TextView)findViewById(R.id.textViewCity);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.loading));
 
         time = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
         textViewDate.setText(time.format(new Date()));
@@ -46,6 +59,10 @@ public class HomeActivity extends ActionBarActivity {
         };
 
         registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+
+
+        new LoadWeatherService().execute();
+
 
     }
 
@@ -80,5 +97,25 @@ public class HomeActivity extends ActionBarActivity {
             unregisterReceiver(broadcastReceiver);
         }
         super.onDestroy();
+    }
+
+    public class LoadWeatherService extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.hide();
+        }
     }
 }
