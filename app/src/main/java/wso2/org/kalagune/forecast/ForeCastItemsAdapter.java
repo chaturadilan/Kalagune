@@ -43,10 +43,10 @@ public class ForeCastItemsAdapter extends ArrayAdapter<ForecastItem> {
         }
 
         ForecastItem forecastItem = getItem(position);
-        viewHolder.imageViewForecastImage.setImageDrawable(forecastItem.forecastImage);
-        viewHolder.textViewForecastText.setText(forecastItem.forecastText);
-        viewHolder.textViewForecastDate.setText(forecastItem.forecastDate);
-        viewHolder.textViewForecastTemp.setText(forecastItem.forecastTemp);
+        viewHolder.imageViewForecastImage.setImageDrawable(forecastItem.getForecastImage());
+        viewHolder.textViewForecastText.setText(forecastItem.getForecastText());
+        viewHolder.textViewForecastDate.setText(forecastItem.getForecastDate());
+        viewHolder.textViewForecastTemp.setText(forecastItem.getForecastTemp());
 
         return convertView;
     }

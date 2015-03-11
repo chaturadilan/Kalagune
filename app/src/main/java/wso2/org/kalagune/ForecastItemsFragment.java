@@ -3,6 +3,7 @@ package wso2.org.kalagune;
 
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,8 @@ import wso2.org.kalagune.forecast.ForecastItem;
 public class ForecastItemsFragment extends ListFragment {
 
 
+    ProgressDialog progressDialog;
+
     public ForecastItemsFragment() {
         // Required empty public constructor
     }
@@ -27,16 +30,26 @@ public class ForecastItemsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new LoadWeatherForecast().execute();
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getResources().getString(R.string.loading));
+
+        new LoadWeatherForecastService().execute();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
+
     }
 
-    private class LoadWeatherForecast extends AsyncTask<Void, Void, List<ForecastItem>>{
+    private class LoadWeatherForecastService extends AsyncTask<Void, Void, List<ForecastItem>>{
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog.show();
+        }
 
         @Override
         protected List<ForecastItem> doInBackground(Void... params) {
@@ -50,6 +63,7 @@ public class ForecastItemsFragment extends ListFragment {
         @Override
         protected void onPostExecute(List<ForecastItem> forecastItems) {
             setListAdapter(new ForeCastItemsAdapter(getActivity(), forecastItems));
+            progressDialog.hide();
         }
 
     }

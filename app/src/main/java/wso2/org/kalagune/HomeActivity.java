@@ -1,21 +1,20 @@
 package wso2.org.kalagune;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -30,7 +29,8 @@ import java.util.Locale;
 public class HomeActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private TextView textViewTime, textViewDate, textViewCity;
+    private TextView textViewTime, textViewDate, textViewTemp, textViewCity, textViewWeather;
+    private ProgressDialog progressDialog;
     private BroadcastReceiver broadcastReceiver;
     private static final String DATE_FORMAT = "EEEE, MMMM dd";
     private static final String TIME_FORMAT = "HH:mm";
@@ -40,13 +40,19 @@ public class HomeActivity extends ActionBarActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         buildGoogleApiClient();
         textViewDate = (TextView)findViewById(R.id.textViewDate);
         textViewTime = (TextView)findViewById(R.id.textViewTime);
+        textViewTemp = (TextView)findViewById(R.id.textViewTemp);
         textViewCity = (TextView)findViewById(R.id.textViewCity);
+        textViewWeather = (TextView)findViewById(R.id.textViewWeather);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.loading));
 
         time = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
         textViewDate.setText(time.format(new Date()));
@@ -91,8 +97,27 @@ public class HomeActivity extends ActionBarActivity implements
         {
             e.printStackTrace();
         }
+    }
 
-        textViewCity.setText("ADO"+cityName);
+    public class LoadWeatherService extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.hide();
+        }
+
     }
 
 
@@ -128,7 +153,6 @@ public class HomeActivity extends ActionBarActivity implements
         super.onDestroy();
     }
 
-    @Override
     public void onConnected(Bundle bundle) {
         location = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
@@ -146,4 +170,5 @@ public class HomeActivity extends ActionBarActivity implements
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
 }
