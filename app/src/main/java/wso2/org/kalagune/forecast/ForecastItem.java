@@ -7,15 +7,31 @@ import android.graphics.drawable.Drawable;
  */
 public class ForecastItem {
 
-    public final Drawable forecastImage;
-    public final String forecastText;
-    public final String forecastDate;
-    public final String forecastTemp;
+    private Drawable forecastImage;
+    private String forecastText;
+    private String forecastDate;
+    private final String forecastTemp;
 
     public ForecastItem(Drawable forecastImage, String forecastText,  String forecastDate,  String forecastTemp) {
         this.forecastImage = forecastImage;
         this.forecastText = forecastText;
         this.forecastDate = forecastDate;
         this.forecastTemp = forecastTemp;
+    }
+
+    public Drawable getForecastImage() {
+        return forecastImage;
+    }
+
+    public String getForecastText() {
+        return forecastText;
+    }
+
+    public String getForecastDate() {
+        return forecastDate;
+    }
+
+    public String getForecastTemp() {
+        return forecastTemp;
     }
 }
