@@ -11,13 +11,19 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,13 +33,14 @@ import java.util.Locale;
 
 
 public class HomeActivity extends ActionBarActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        ConnectionCallbacks, OnConnectionFailedListener {
 
     private TextView textViewTime, textViewDate, textViewTemp, textViewCity, textViewWeather;
     private ProgressDialog progressDialog;
     private BroadcastReceiver broadcastReceiver;
     private static final String DATE_FORMAT = "EEEE, MMMM dd";
     private static final String TIME_FORMAT = "HH:mm";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private SimpleDateFormat time;
     private Location location;
     private GoogleApiClient mGoogleApiClient;
@@ -44,7 +51,11 @@ public class HomeActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        buildGoogleApiClient();
+        if (checkPlayServices()) {
+
+            // Building the GoogleApi client
+            buildGoogleApiClient();
+        }
         textViewDate = (TextView)findViewById(R.id.textViewDate);
         textViewTime = (TextView)findViewById(R.id.textViewTime);
         textViewTemp = (TextView)findViewById(R.id.textViewTemp);
@@ -91,7 +102,7 @@ public class HomeActivity extends ActionBarActivity implements
             {
                 cityName = addresses.get(0).getLocality();
                 // you should also try with addresses.get(0).toSring();
-                System.out.println("ADO" + cityName);
+                textViewCity.setText(cityName);
             }
         } catch (IOException e)
         {
@@ -161,14 +172,50 @@ public class HomeActivity extends ActionBarActivity implements
         }
     }
 
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkPlayServices();
+    }
+
+    /**
+     * Google api callback methods
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i("HomeActivity", "Connection failed: ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+    }
+
     @Override
     public void onConnectionSuspended(int i) {
 
     }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
 }
