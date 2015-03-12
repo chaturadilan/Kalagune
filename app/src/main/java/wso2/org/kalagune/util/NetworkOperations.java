@@ -11,7 +11,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 
 /**
  * Created by inoshp on 3/11/15.
@@ -25,9 +24,12 @@ public class NetworkOperations {
         HttpGet request = new HttpGet(url);
 
         HttpResponse response;
+        BufferedReader reader = null;
+        InputStreamReader streamReader = null;
         try {
             response = client.execute(request);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Constants.ENCODING));
+            streamReader = new InputStreamReader(response.getEntity().getContent(), Constants.ENCODING);
+            reader = new BufferedReader(streamReader);
             return reader.readLine();
         } catch (ClientProtocolException e) {
             Log.e(TAG, e.toString());
@@ -35,7 +37,18 @@ public class NetworkOperations {
         } catch (IOException e) {
             Log.e(TAG, e.toString());
             return null;
-        }
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (streamReader != null) {
+                    streamReader.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+            }
 
+        }
     }
 }
