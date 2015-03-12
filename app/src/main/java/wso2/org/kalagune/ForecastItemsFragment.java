@@ -6,7 +6,6 @@ import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -111,7 +110,9 @@ public class ForecastItemsFragment extends ListFragment {
         @Override
         protected void onPostExecute(List<ForecastItem> forecastItems) {
             setListAdapter(new ForeCastItemsAdapter(getActivity(), forecastItems));
-            progressDialog.hide();
+            if(progressDialog != null){
+                progressDialog.dismiss();
+            }
         }
 
     }
