@@ -64,14 +64,15 @@ public class ForecastItemsFragment extends ListFragment {
             String result = NetworkOperations.makeGetRequest(Constants.SERVER_NAME+Constants.FORECAST_API);
             List<ForecastItem> forecastItemList = new ArrayList<>();
             try {
-                JSONArray resultArray = new JSONArray(result);
-                for (int x=0;x<resultArray.length();x++){
-                    JSONObject json=resultArray.getJSONObject(x);
-                    String dateTime = json.getString(Constants.DATE);
-                    String condition=json.getString(Constants.CONDITION);
-                    int temperature = json.getInt(Constants.TEMPERATURE);
+                if(result!=null) {
+                    JSONArray resultArray = new JSONArray(result);
+                    for (int x = 0; x < resultArray.length(); x++) {
+                        JSONObject json = resultArray.getJSONObject(x);
+                        String dateTime = json.getString(Constants.DATE);
+                        String condition = json.getString(Constants.CONDITION);
+                        int temperature = json.getInt(Constants.TEMPERATURE);
 
-                    SimpleDateFormat  format = new SimpleDateFormat("dd/MM/yyyy");
+                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
                         Date date = format.parse(dateTime);
                         format = new SimpleDateFormat("EEE dd,MMM");
@@ -79,22 +80,23 @@ public class ForecastItemsFragment extends ListFragment {
                         int drawableId;
                         switch (condition) {
                             case Constants.SUNNY:
-                                drawableId=R.drawable.sunny;
+                                drawableId = R.drawable.sunny;
                                 break;
                             case Constants.CLOUDY:
-                                drawableId=R.drawable.cloudy;
+                                drawableId = R.drawable.cloudy;
                                 break;
                             case Constants.THUNDER:
-                                drawableId=R.drawable.thunder;
+                                drawableId = R.drawable.thunder;
                                 break;
                             case Constants.SHOWERS:
-                                drawableId=R.drawable.showers;
+                                drawableId = R.drawable.showers;
                                 break;
                             default:
-                                drawableId=R.drawable.sunny;
+                                drawableId = R.drawable.sunny;
                         }
-                        forecastItemList.add(new ForecastItem(getResources().getDrawable(drawableId), condition, formattedDate, temperature+"°c"));
 
+                        forecastItemList.add(new ForecastItem(getResources().getDrawable(drawableId), condition, formattedDate, temperature + "°c"));
+                    }
                 }
             } catch (JSONException e) {
                 Log.e(TAG, e.toString());

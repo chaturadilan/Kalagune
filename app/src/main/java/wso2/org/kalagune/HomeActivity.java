@@ -141,29 +141,31 @@ public class HomeActivity extends ActionBarActivity implements
         protected void onPostExecute(String result) {
             ForecastItem item = new ForecastItem();
             try {
-                JSONObject json = new JSONObject(result);
-                String condition=json.getString(Constants.CONDITION);
-                int temperature=json.getInt(Constants.TEMPERATURE);
-                textViewTemp.setText(temperature+"°c");
-                textViewWeather.setText(condition);
-                int drawableId;
-                switch (condition) {
-                    case Constants.SUNNY:
-                        drawableId=R.drawable.sunny;
-                        break;
-                    case Constants.CLOUDY:
-                        drawableId=R.drawable.cloudy;
-                        break;
-                    case Constants.THUNDER:
-                        drawableId=R.drawable.thunder;
-                        break;
-                    case Constants.SHOWERS:
-                        drawableId=R.drawable.showers;
-                        break;
-                    default:
-                        drawableId=R.drawable.sunny;
+                if(result!=null) {
+                    JSONObject json = new JSONObject(result);
+                    String condition = json.getString(Constants.CONDITION);
+                    int temperature = json.getInt(Constants.TEMPERATURE);
+                    textViewTemp.setText(temperature + "°c");
+                    textViewWeather.setText(condition);
+                    int drawableId;
+                    switch (condition) {
+                        case Constants.SUNNY:
+                            drawableId = R.drawable.sunny;
+                            break;
+                        case Constants.CLOUDY:
+                            drawableId = R.drawable.cloudy;
+                            break;
+                        case Constants.THUNDER:
+                            drawableId = R.drawable.thunder;
+                            break;
+                        case Constants.SHOWERS:
+                            drawableId = R.drawable.showers;
+                            break;
+                        default:
+                            drawableId = R.drawable.sunny;
+                    }
+                    imageViewWeather.setImageDrawable(getResources().getDrawable(drawableId));
                 }
-                imageViewWeather.setImageDrawable(getResources().getDrawable(drawableId));
             }
             catch (JSONException e){
                 Log.e(TAG, e.toString());
