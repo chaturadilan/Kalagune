@@ -19,16 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -147,7 +145,10 @@ public class HomeActivity extends ActionBarActivity implements
 
             }
             super.onPostExecute(result);
-            progressDialog.hide();
+            if(progressDialog != null){
+                progressDialog.dismiss();
+            }
+
         }
 
     }
