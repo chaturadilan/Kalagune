@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ public class HomeActivity extends ActionBarActivity implements
     private SimpleDateFormat time;
     private Location location;
     private GoogleApiClient mGoogleApiClient;
+    private ImageView imageViewWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class HomeActivity extends ActionBarActivity implements
         textViewTemp = (TextView)findViewById(R.id.textViewTemp);
         textViewCity = (TextView)findViewById(R.id.textViewCity);
         textViewWeather = (TextView)findViewById(R.id.textViewWeather);
+        imageViewWeather = (ImageView)findViewById(R.id.imageViewWeather);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.loading));
@@ -113,7 +116,7 @@ public class HomeActivity extends ActionBarActivity implements
             {
                 cityName = addresses.get(0).getLocality();
                 // you should also try with addresses.get(0).toSring();
-                textViewCity.setText(cityName);
+                textViewCity.setText(cityName+ " ADOO");
             }
         } catch (IOException e)
         {
@@ -139,9 +142,28 @@ public class HomeActivity extends ActionBarActivity implements
             ForecastItem item = new ForecastItem();
             try {
                 JSONObject json = new JSONObject(result);
-                String date=json.getString("date");
-                String condition=json.getString("condition");
-                int temperature=json.getInt("temperature");
+                String condition=json.getString(Constants.CONDITION);
+                int temperature=json.getInt(Constants.TEMPERATURE);
+                textViewTemp.setText(temperature+"°c");
+                textViewWeather.setText(condition);
+                int drawableId;
+                switch (condition) {
+                    case Constants.SUNNY:
+                        drawableId=R.drawable.sunny;
+                        break;
+                    case Constants.CLOUDY:
+                        drawableId=R.drawable.cloudy;
+                        break;
+                    case Constants.THUNDER:
+                        drawableId=R.drawable.thunder;
+                        break;
+                    case Constants.SHOWERS:
+                        drawableId=R.drawable.showers;
+                        break;
+                    default:
+                        drawableId=R.drawable.sunny;
+                }
+                imageViewWeather.setImageDrawable(getResources().getDrawable(drawableId));
             }
             catch (JSONException e){
                 Log.e(TAG, e.toString());
