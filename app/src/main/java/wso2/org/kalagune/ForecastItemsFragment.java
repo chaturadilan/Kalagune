@@ -21,6 +21,7 @@ import java.util.List;
 
 import wso2.org.kalagune.forecast.ForeCastItemsAdapter;
 import wso2.org.kalagune.forecast.ForecastItem;
+import wso2.org.kalagune.util.Constants;
 import wso2.org.kalagune.util.NetworkOperations;
 
 
@@ -28,6 +29,7 @@ import wso2.org.kalagune.util.NetworkOperations;
  * A simple {@link Fragment} subclass.
  */
 public class ForecastItemsFragment extends ListFragment {
+    private static final String TAG = ForecastItemsFragment.class.getName();
 
 
     ProgressDialog progressDialog;
@@ -62,33 +64,46 @@ public class ForecastItemsFragment extends ListFragment {
 
         @Override
         protected List<ForecastItem> doInBackground(Void... params) {
-            String result = NetworkOperations.makeGetRequest("http://10.100.5.70/weather/api.php?action=forcast");
+            String result = NetworkOperations.makeGetRequest(Constants.SERVER_NAME+Constants.FORECAST_API);
             List<ForecastItem> forecastItemList = new ArrayList<>();
             try {
                 JSONArray resultArray = new JSONArray(result);
                 for (int x=0;x<resultArray.length();x++){
                     JSONObject json=resultArray.getJSONObject(x);
-                    String dateTime = json.getString("date");
-                    String condition=json.getString("condition");
-                    int temperature = json.getInt("temperature");
+                    String dateTime = json.getString(Constants.DATE);
+                    String condition=json.getString(Constants.CONDITION);
+                    int temperature = json.getInt(Constants.TEMPERATURE);
 
                     SimpleDateFormat  format = new SimpleDateFormat("dd/MM/yyyy");
-                    try {
+
                         Date date = format.parse(dateTime);
                         format = new SimpleDateFormat("EEE dd,MMM");
                         String formattedDate = format.format(date);
-                        int drawable=1;
-                        forecastItemList.add(new ForecastItem(getResources().getDrawable(R.drawable.showers), condition, formattedDate, temperature+"°c"));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
-
+                        int drawableId;
+                        switch (condition) {
+                            case Constants.SUNNY:
+                                drawableId=R.drawable.sunny;
+                                break;
+                            case Constants.CLOUDY:
+                                drawableId=R.drawable.cloudy;
+                                break;
+                            case Constants.THUNDER:
+                                drawableId=R.drawable.thunder;
+                                break;
+                            case Constants.SHOWERS:
+                                drawableId=R.drawable.showers;
+                                break;
+                            default:
+                                drawableId=R.drawable.sunny;
+                        }
+                        forecastItemList.add(new ForecastItem(getResources().getDrawable(drawableId), condition, formattedDate, temperature+"°c"));
 
                 }
             } catch (JSONException e) {
-
+                Log.e(TAG, e.toString());
+            }
+             catch (ParseException e) {
+                 Log.e(TAG, e.toString());
             }
             return forecastItemList;
         }

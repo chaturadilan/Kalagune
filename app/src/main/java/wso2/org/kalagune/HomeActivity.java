@@ -37,11 +37,13 @@ import java.util.List;
 import java.util.Locale;
 
 import wso2.org.kalagune.forecast.ForecastItem;
+import wso2.org.kalagune.util.Constants;
 import wso2.org.kalagune.util.NetworkOperations;
 
 
 public class HomeActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
+    private static final String TAG = HomeActivity.class.getName();
 
     private TextView textViewTime, textViewDate, textViewTemp, textViewCity, textViewWeather;
     private ProgressDialog progressDialog;
@@ -131,7 +133,7 @@ public class HomeActivity extends ActionBarActivity implements
 
         @Override
         protected String doInBackground(Void... params) {
-            return NetworkOperations.makeGetRequest("http://10.100.5.70/weather/api.php?action=location");
+            return NetworkOperations.makeGetRequest(Constants.SERVER_NAME+Constants.LOCATION_TEMPERATURE);
         }
 
         @Override
@@ -144,7 +146,7 @@ public class HomeActivity extends ActionBarActivity implements
                 int temperature=json.getInt("temperature");
             }
             catch (JSONException e){
-
+                Log.e(TAG, e.toString());
             }
             super.onPostExecute(result);
             progressDialog.hide();
@@ -186,8 +188,7 @@ public class HomeActivity extends ActionBarActivity implements
     }
 
     public void onConnected(Bundle bundle) {
-        location = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             setCity();
         }

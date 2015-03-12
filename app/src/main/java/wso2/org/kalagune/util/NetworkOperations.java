@@ -27,13 +27,13 @@ public class NetworkOperations {
         HttpResponse response;
         try {
             response = client.execute(request);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), Constants.ENCODING));
             return reader.readLine();
         } catch (ClientProtocolException e) {
-            Log.d(TAG, e.toString());
+            Log.e(TAG, e.toString());
             return null;
         } catch (IOException e) {
-            Log.d(TAG, e.toString());
+            Log.e(TAG, e.toString());
             return null;
         }
 
