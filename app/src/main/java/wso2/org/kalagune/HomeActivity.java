@@ -116,7 +116,7 @@ public class HomeActivity extends ActionBarActivity implements
             {
                 cityName = addresses.get(0).getLocality();
                 // you should also try with addresses.get(0).toSring();
-                textViewCity.setText(cityName+ " ADOO");
+                textViewCity.setText(cityName);
             }
         } catch (IOException e)
         {
@@ -195,6 +195,7 @@ public class HomeActivity extends ActionBarActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_forecast) {
             Intent intent = new Intent(this, ForecastActivity.class);
+            intent.putExtra("city", textViewCity.getText());
             startActivity(intent);
             return true;
         }

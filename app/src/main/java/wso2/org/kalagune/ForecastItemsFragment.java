@@ -3,7 +3,6 @@ package wso2.org.kalagune;
 
 import android.app.Fragment;
 import android.app.ListFragment;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +31,7 @@ public class ForecastItemsFragment extends ListFragment {
     private static final String TAG = ForecastItemsFragment.class.getName();
 
 
-    ProgressDialog progressDialog;
+
 
     public ForecastItemsFragment() {
         // Required empty public constructor
@@ -42,8 +41,6 @@ public class ForecastItemsFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getResources().getString(R.string.loading));
 
         new LoadWeatherForecastService().execute();
     }
@@ -59,7 +56,7 @@ public class ForecastItemsFragment extends ListFragment {
 
         @Override
         protected void onPreExecute() {
-            progressDialog.show();
+
         }
 
         @Override
@@ -111,9 +108,7 @@ public class ForecastItemsFragment extends ListFragment {
         @Override
         protected void onPostExecute(List<ForecastItem> forecastItems) {
             setListAdapter(new ForeCastItemsAdapter(getActivity(), forecastItems));
-            if(progressDialog != null){
-                progressDialog.dismiss();
-            }
+
         }
 
     }
